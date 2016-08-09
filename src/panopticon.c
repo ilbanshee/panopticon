@@ -25,6 +25,8 @@
 #include <string.h>
 #include <getopt.h>
 
+#include "process.h"
+
 extern const char *__progname;
 
 static void
@@ -89,6 +91,8 @@ main(int argc, char *argv[])
 	 * TODO:3000 you want here. */
 	log_info("main", "hello world!");
 	log_warnx("main", "your program does nothing");
+        
+    test();
 
 	return EXIT_SUCCESS;
 }

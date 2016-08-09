@@ -8,7 +8,7 @@ AC_CONFIG_SRCDIR([src/log.c])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([foreign -Wall -Werror tar-ustar])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror tar-ustar subdir-objects])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)])
 m4_pattern_allow([AM_PROG_AR])
@@ -62,11 +62,19 @@ esac
 
 AC_CACHE_SAVE
 
-## TODO:2003 Add the dependencies of your project here.
-## TODO:2003 The use of "jansson" here is not mandatory. You don't have
-## TODO:2003 to keep it.
+AC_DEFINE([HOST_LINUX], [0], [Define to 1 if building on Linux])
+AC_DEFINE([HOST_DARWIN], [0], [Define to 1 if building on Darwin])
+AM_CONDITIONAL([LINUX], [false])
+AM_CONDITIONAL([DARWIN], [false])
 
-PKG_CHECK_MODULES([JANSSON], [jansson >= 2.1])
+case $host in
+ *linux*)  AC_DEFINE([HOST_LINUX], [1])  AM_CONDITIONAL([LINUX], [true]);;
+ *darwin*) AC_DEFINE([HOST_DARWIN], [1]) AM_CONDITIONAL([DARWIN], [true]);;
+esac
+
+#PKG_CHECK_MODULES([JANSSON], [jansson >= 2.7])
+PKG_CHECK_MODULES([LIBUV], [libuv >= 1.9])
+PKG_CHECK_MODULES([AVRO], [avro-c >= 1.8])
 
 AC_CACHE_SAVE
 
