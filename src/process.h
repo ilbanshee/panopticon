@@ -1,6 +1,8 @@
 #ifndef PROCESS_H_
 #define PROCESS_H_
 #include <sys/types.h>
+#include <uthash.h>
+#include <utlist.h>
 
 typedef struct {
   // some config?
