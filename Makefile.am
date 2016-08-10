@@ -7,7 +7,7 @@ endif
 if DARWIN
 SUBDIRS       += src/darwin
 endif
-SUBDIRS	      += src
+SUBDIRS	      += src test
 EXTRA_DIST     = get-version autogen.sh
 DISTCLEANFILES = ChangeLog
 dist_doc_DATA  = README.md
