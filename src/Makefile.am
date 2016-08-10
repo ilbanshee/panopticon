@@ -9,6 +9,9 @@ panopticon_SOURCES  = log.c log.h panopticon.h panopticon.c process.h
 panopticon_CFLAGS   = $(AM_CFLAGS) @AVRO_CFLAGS@ @LIBUV_CFLAGS@ 
 if LINUX
 panopticon_LDADD    = linux/libhost.la
+endif  
+if DARWIN
+panopticon_LDADD    = darwin/libhost.la
 endif
 panopticon_LDFLAGS  = $(AM_LDFLAGS) @AVRO_LIBS@ @LIBUV_LIBS@
 

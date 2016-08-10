@@ -4,6 +4,9 @@ SUBDIRS        = lib lib/duktape
 if LINUX
 SUBDIRS	      += src/linux
 endif
+if DARWIN
+SUBDIRS       += src/darwin
+endif
 SUBDIRS	      += src
 EXTRA_DIST     = get-version autogen.sh
 DISTCLEANFILES = ChangeLog

@@ -6,7 +6,7 @@ AC_INIT([Panopticon],
         [ilbanshee@users.noreply.github.com])
 AC_CONFIG_SRCDIR([src/log.c])
 AC_CONFIG_HEADER([config.h])
-AC_CONFIG_FILES([Makefile lib/Makefile lib/duktape/Makefile src/Makefile src/linux/Makefile])
+AC_CONFIG_FILES([Makefile lib/Makefile lib/duktape/Makefile src/Makefile src/linux/Makefile src/darwin/Makefile])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror tar-ustar subdir-objects])
 AM_MAINTAINER_MODE
