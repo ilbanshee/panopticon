@@ -2,7 +2,7 @@ AM_CFLAGS = $(MORE_CFLAGS) -I$(abs_top_srcdir)/lib
 AM_CPPFLAGS = $(MORE_CPPFLAGS)
 AM_LDFLAGS = $(MORE_LDFLAGS)
 
-bin_PROGRAMS = panopticon processline
+bin_PROGRAMS = panopticon
 dist_man_MANS = panopticon.8
 
 panopticon_SOURCES  = log.c log.h panopticon.h panopticon.c process.h
@@ -14,7 +14,3 @@ if DARWIN
 panopticon_LDADD    = darwin/libhost.la
 endif
 panopticon_LDFLAGS  = $(AM_LDFLAGS) @AVRO_LIBS@ @LIBUV_LIBS@
-
-processline_SOURCES = processline.c
-processline_LDFLAGS = $(abs_top_builddir)/lib/duktape/libduktape.la
-EXTRA_DIST = process.js
