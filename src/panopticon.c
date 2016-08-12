@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <uv.h>
 
 #include "process.h"
 
@@ -40,6 +41,16 @@ static void usage(void) {
   fprintf(stderr, " -v, --version      print version and exit\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "see manual page " PACKAGE "(8) for more information\n");
+}
+
+void signal_handler(uv_signal_t *handle, int signum) {
+  printf("Signal received: %d\n", signum);
+  uv_signal_stop(handle);
+}
+
+void timer_handler(uv_timer_t *handle) {
+  printf("Timing out\n");
+  exit(0);
 }
 
 int main(int argc, char *argv[]) {
@@ -79,8 +90,23 @@ int main(int argc, char *argv[]) {
 
   log_init(debug, __progname);
 
+  uv_loop_t *loop = malloc(sizeof(uv_loop_t));
+  uv_loop_init(loop);
+
   log_info("main", "hello world!");
-  log_warnx("main", "your program does nothing");
+
+  uv_signal_t sig_int;
+  uv_signal_init(loop, &sig_int);
+  uv_signal_start(&sig_int, signal_handler, SIGINT);
+
+  uv_timer_t timer;
+  uv_timer_init(loop, &timer);
+  uv_timer_start(&timer, timer_handler, 1000, 0);
+
+  uv_run(loop, UV_RUN_DEFAULT);
+
+  uv_loop_close(loop);
+  free(loop);
 
   test();
 
