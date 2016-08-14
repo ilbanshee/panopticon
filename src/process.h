@@ -26,11 +26,35 @@
 #include <uthash.h>
 #include <utlist.h>
 
-typedef struct {
+enum { STATE_NORMAL, STATE_NEW, STATE_DELETED } process_state;
+
+typedef struct process_s {
+  pid_t pid;           /* process pid */
+  char *name;          /* executable name */
+  char *cmdline;       /* full path command line */
+  uid_t user;          /* real user id for process */
+  int32_t threads_num; /* number of threads */
+  int32_t threads_run; /* number of running threads */
+  uint64_t vms;        /* virtual memory size in Kb */
+  uint64_t rss;        /* resident set size in Kb */
+  uint64_t
+      utime; /* total user time for process in minutes.seconds * TIME_TO_MIN */
+  uint64_t stime;         /* total system time for process in minutes.seconds *
+                             TIME_TO_MIN */
+  struct process_s *next; /* pointer to the next structure in list */
+} process_t;
+
+typedef struct user_s {
+  uid_t user;
+  char *name;
+  struct user_s *next;
+} user_t;
+
+typedef struct process_list_s {
   // some config?
 
-  // processes
-  // users of running processes
+  process_t *processes;
+  user_t *users;
 
   uid_t current_id;
 
@@ -39,36 +63,36 @@ typedef struct {
   int userland_threads;
   int kernel_threads;
 
-  unsigned long long int totalMem;
-  unsigned long long int usedMem;
-  unsigned long long int freeMem;
-  unsigned long long int sharedMem;
-  unsigned long long int buffersMem;
-  unsigned long long int cachedMem;
-  unsigned long long int totalSwap;
-  unsigned long long int usedSwap;
-  unsigned long long int freeSwap;
+  uint64_t totalMem;
+  uint64_t usedMem;
+  uint64_t freeMem;
+  uint64_t sharedMem;
+  uint64_t buffersMem;
+  uint64_t cachedMem;
+  uint64_t totalSwap;
+  uint64_t usedSwap;
+  uint64_t freeSwap;
 
   int cpu_count;
-} process_list;
-
-typedef struct {
-
-} process;
+} process_list_t;
 
 int test();
 
-process_list *process_list_new(uid_t user_id);
-void process_list_delete(process_list *pl);
+process_list_t *process_list_new(uid_t user_id);
 
-void process_list_add(process_list *this, process *p);
+void process_list_delete(process_list_t *pl);
 
-void process_list_remove(process_list *this, process *p);
+void process_list_add(process_list_t *this, process_t *p);
 
-process *process_list_get(process_list *this, int idx);
+void process_list_remove(process_list_t *this, process_t *p);
 
-int process_list_size(process_list *this);
+process_t *process_list_get(process_list_t *this, int idx);
 
-void process_list_sort(process_list *this);
+int process_list_size(process_list_t *this);
 
+void process_list_sort(process_list_t *this);
+
+int process_list_processes(process_list_t **result);
+
+void process_print(process_t *process);
 #endif // PROCESS_H_

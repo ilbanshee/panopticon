@@ -5,11 +5,11 @@ AM_LDFLAGS = $(MORE_LDFLAGS)
 bin_PROGRAMS = panopticon
 dist_man_MANS = panopticon.8
 
-panopticon_SOURCES  = log.c log.h panopticon.h panopticon.c process.h
-panopticon_CFLAGS   = $(AM_CFLAGS) @AVRO_CFLAGS@ @LIBUV_CFLAGS@ 
+panopticon_SOURCES  = log.c log.h panopticon.h panopticon.c process.h process.c
+panopticon_CFLAGS   = $(AM_CFLAGS) @AVRO_CFLAGS@ @LIBUV_CFLAGS@
 if LINUX
 panopticon_LDADD    = linux/libhost.la
-endif  
+endif
 if DARWIN
 panopticon_LDADD    = darwin/libhost.la
 endif

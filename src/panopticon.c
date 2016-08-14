@@ -8,7 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
+ * The above copyright notice and this permission notice shall be included in
+ * all
  * copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -90,6 +91,18 @@ int main(int argc, char *argv[]) {
 
   log_init(debug, __progname);
 
+  process_list_t *p = process_list_new(geteuid());
+  process_list_processes(&p);
+
+  process_t *elt = NULL;
+  int count = 0;
+
+  DL_FOREACH(p->processes, elt) process_print(elt);
+  DL_COUNT(p->processes, elt, count);
+
+  printf("found %d processes\n", count);
+  // test();
+
   uv_loop_t *loop = malloc(sizeof(uv_loop_t));
   uv_loop_init(loop);
 
@@ -107,8 +120,6 @@ int main(int argc, char *argv[]) {
 
   uv_loop_close(loop);
   free(loop);
-
-  test();
 
   return EXIT_SUCCESS;
 }

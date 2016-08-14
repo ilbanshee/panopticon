@@ -20,12 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef DARWIN_PROCESS_H_
-#define DARWIN_PROCESS_H_
-#include "../process.h"
-#include <sys/sysctl.h>
+#include "process.h"
+#include <config.h>
+#include <inttypes.h>
+#include <stdio.h> // for printf
 
-typedef struct kinfo_proc kinfo_proc;
-static int get_BSD_process_list(kinfo_proc **procList, size_t *procCount);
+#ifdef HOST_DARWIN
+#define TIME_TO_MIN 1000000000.0L
+#endif
 
-#endif // DARWIN_PROCESS_H_
+process_list_t *process_list_new(uid_t user_id) {
+  process_list_t *res = calloc(1, sizeof(process_list_t));
+  res->processes = NULL;
+  res->users = NULL;
+  res->current_id = user_id;
+  return res;
+}
+
+void process_print(process_t *process) {
+  printf("pid: %d, tn: %d, tr: %d, vms: %" PRIu64 ", rss: %" PRIu64
+         ", cpu: %Lf\n",
+         process->pid, process->threads_num, process->threads_run, process->vms,
+         process->rss, (process->utime + process->stime) / TIME_TO_MIN);
+}
