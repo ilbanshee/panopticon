@@ -1,11 +1,12 @@
-AM_CFLAGS = $(MORE_CFLAGS) -I$(abs_top_srcdir)/lib
+AM_CFLAGS = $(MORE_CFLAGS) -I$(abs_top_srcdir)/lib $(STATS_CFLAGS)
 AM_CPPFLAGS = $(MORE_CPPFLAGS)
 AM_LDFLAGS = $(MORE_LDFLAGS)
 
 bin_PROGRAMS = panopticon
 dist_man_MANS = panopticon.8
 
-panopticon_SOURCES  = log.c log.h panopticon.h panopticon.c process.h process.c
+panopticon_SOURCES  = log.c log.h panopticon.h panopticon.c \
+					  process.h process.c stats.c stats.h
 panopticon_CFLAGS   = $(AM_CFLAGS) @AVRO_CFLAGS@ @LIBUV_CFLAGS@
 if LINUX
 panopticon_LDADD    = linux/libhost.la

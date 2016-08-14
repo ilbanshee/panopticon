@@ -29,6 +29,11 @@
 #include <uv.h>
 
 #include "process.h"
+#include "stats.h"
+
+#ifdef COLLECT_STATS
+stats_t stats;
+#endif
 
 extern const char *__progname;
 
@@ -96,11 +101,14 @@ int main(int argc, char *argv[]) {
   process_t *elt = NULL;
   int count = 0;
 
-  DL_FOREACH(p->processes, elt) process_print(elt);
+  // DL_FOREACH(p->processes, elt) process_print(elt);
+  printf("ts: %lld\n", p->timestamp);
   DL_COUNT(p->processes, elt, count);
 
   printf("found %d processes\n", count);
-  // test();
+#ifdef COLLECT_STATS
+  dump_stats(stats);
+#endif
 
   uv_loop_t *loop = malloc(sizeof(uv_loop_t));
   uv_loop_init(loop);

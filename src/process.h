@@ -25,7 +25,12 @@
 #include <uthash.h>
 #include <utlist.h>
 
-enum { STATE_NORMAL, STATE_NEW, STATE_DELETED } process_state;
+typedef enum {
+  STATE_UNKNOWN,
+  STATE_NORMAL,
+  STATE_NEW,
+  STATE_DELETED
+} process_state;
 
 typedef struct process_s {
   pid_t pid;           /* process pid */
@@ -36,10 +41,12 @@ typedef struct process_s {
   int32_t threads_run; /* number of running threads */
   uint64_t vms;        /* virtual memory size in Kb */
   uint64_t rss;        /* resident set size in Kb */
-  uint64_t
-      utime; /* total user time for process in minutes.seconds * TIME_TO_MIN */
-  uint64_t stime;         /* total system time for process in minutes.seconds *
-                             TIME_TO_MIN */
+  uint64_t utime;      /* total user time in minutes.seconds * TIME_TO_MIN */
+  uint64_t stime;      /* total system time for process in minutes.seconds *
+                          TIME_TO_MIN */
+  process_state
+      state; /* process state inside this list (i.e) if process is new from
+                previous list or it has just been deleted */
   struct process_s *next; /* pointer to the next structure in list */
 } process_t;
 
@@ -73,16 +80,15 @@ typedef struct process_list_s {
   uint64_t freeSwap;
 
   int cpu_count;
+  uint64_t timestamp; /* in microseconds */
 } process_list_t;
 
 int test();
 
 process_list_t *process_list_new(uid_t user_id);
-
 void process_list_delete(process_list_t *pl);
 
 void process_list_add(process_list_t *this, process_t *p);
-
 void process_list_remove(process_list_t *this, process_t *p);
 
 process_t *process_list_get(process_list_t *this, int idx);

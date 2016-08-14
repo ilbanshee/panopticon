@@ -60,6 +60,12 @@ case $host_os in
      ;;
 esac
 
+AC_ARG_ENABLE([stats],
+              [AC_HELP_STRING([--enable-stats=@<:@yes/no@:>@],
+                              [Enable stats @<:@default=no@:>@])],
+              [AC_SUBST([STATS_CFLAGS], [-DCOLLECT_STATS])],
+              [])
+
 AC_CACHE_SAVE
 
 AC_DEFINE([HOST_LINUX], [0], [Define to 1 if building on Linux])

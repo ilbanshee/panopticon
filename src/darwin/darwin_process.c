@@ -21,6 +21,7 @@
  */
 #include "darwin_process.h"
 #include <errno.h>
+#include <inttypes.h>
 #include <libproc.h>
 #include <pwd.h>
 #include <stdbool.h>
@@ -29,6 +30,8 @@
 #include <mach/mach.h>
 #include <mach/mach_init.h>
 #include <mach/thread_policy.h>
+
+#include "../stats.h"
 
 /* see https://developer.apple.com/legacy/library/qa/qa2001/qa1123.html */
 /*
@@ -125,6 +128,13 @@ int process_list_processes(process_list_t **result) {
 
   kinfo_proc *proc_list = NULL;
   size_t proc_count = 0;
+
+#ifdef COLLECT_STATS
+  extern stats_t stats;
+  struct timeval tv1;
+  gettimeofday(&tv1, NULL);
+#endif
+
   get_BSD_process_list(&proc_list, &proc_count);
 
   for (unsigned int i = 0; i < proc_count; i++) {
@@ -162,6 +172,7 @@ int process_list_processes(process_list_t **result) {
     to_add->rss = task_info.pti_resident_size / 1024;
     to_add->utime = task_info.pti_total_user;
     to_add->stime = task_info.pti_total_system;
+    to_add->state = STATE_UNKNOWN;
 
     LL_APPEND((*result)->processes, to_add);
     // fields of taskInfo:
@@ -204,6 +215,18 @@ int process_list_processes(process_list_t **result) {
     //          int32_t         pti_priority;       /* task priority*/
   }
   free(proc_list);
+
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  (*result)->timestamp = 1000000 * tv.tv_sec + tv.tv_usec;
+
+#ifdef COLLECT_STATS
+  uint64_t t1 = 1000000 * tv1.tv_sec + tv1.tv_usec;
+  stats.ps_dur = (*result)->timestamp - t1;
+  stats.ps_times_count += 1;
+  stats.ps_last_count = proc_count;
+#endif
+
   return ret;
 }
 
