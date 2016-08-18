@@ -172,7 +172,6 @@ int process_list_processes(process_list_t **result) {
     to_add->rss = task_info.pti_resident_size / 1024;
     to_add->utime = task_info.pti_total_user;
     to_add->stime = task_info.pti_total_system;
-    to_add->state = STATE_UNKNOWN;
 
     LL_APPEND((*result)->processes, to_add);
     // fields of taskInfo:
@@ -215,6 +214,8 @@ int process_list_processes(process_list_t **result) {
     //          int32_t         pti_priority;       /* task priority*/
   }
   free(proc_list);
+
+  LL_SORT((*result)->processes, pidcmp);
 
   struct timeval tv;
   gettimeofday(&tv, NULL);

@@ -32,7 +32,7 @@
 #include "stats.h"
 
 #ifdef COLLECT_STATS
-stats_t stats;
+stats_t stats = {};
 #endif
 
 extern const char *__progname;
@@ -97,15 +97,23 @@ int main(int argc, char *argv[]) {
 
   process_list_t *p = process_list_new(geteuid());
   process_list_processes(&p);
+  sleep(1);
+  process_list_t *p1 = process_list_new(geteuid());
+  process_list_processes(&p1);
+
+  process_usage_list_t *n = process_get_usage(p->processes, p1->processes);
 
   process_t *elt = NULL;
+  process_usage_t *uelt = NULL;
   int count = 0;
 
+  DL_FOREACH(n->usages, uelt) process_usage_print(uelt);
   // DL_FOREACH(p->processes, elt) process_print(elt);
   printf("ts: %lld\n", p->timestamp);
   DL_COUNT(p->processes, elt, count);
 
   printf("found %d processes\n", count);
+
 #ifdef COLLECT_STATS
   dump_stats(stats);
 #endif

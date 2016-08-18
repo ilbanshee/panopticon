@@ -28,12 +28,73 @@
 #define TIME_TO_MIN 1000000000.0L
 #endif
 
+int pidcmp(process_t *a, process_t *b) { return (a->pid > b->pid); }
+
+process_usage_list_t *process_get_usage(process_t *a, process_t *b) {
+  process_usage_list_t *ret = calloc(1, sizeof(process_usage_list_t));
+  process_t *it_a, *it_b;
+  process_usage_t *to_add;
+
+  it_a = a;
+  it_b = b;
+  while (it_a->next != NULL || it_b->next != NULL) {
+    to_add = calloc(1, sizeof(process_usage_t));
+    if (it_a->pid < it_b->pid) {
+      to_add->pid = it_a->pid;
+      to_add->next = NULL;
+      to_add->state = STATE_NEW;
+      LL_APPEND(ret->usages, to_add);
+      it_a = it_a->next;
+    } else if (it_a->pid == it_b->pid) {
+      to_add->pid = it_a->pid;
+      to_add->next = NULL;
+      to_add->state = STATE_NORMAL;
+      to_add->time_in_measure =
+          it_b->utime - it_a->utime + it_b->stime - it_a->stime;
+      LL_APPEND(ret->usages, to_add);
+      it_a = it_a->next;
+      it_b = it_b->next;
+    } else {
+      to_add->pid = it_b->pid;
+      to_add->next = NULL;
+      to_add->state = STATE_NEW;
+      LL_APPEND(ret->usages, to_add);
+      it_b = it_b->next;
+    }
+  }
+  while (it_a->next != NULL) {
+    to_add = calloc(1, sizeof(process_t));
+    memcpy(to_add, it_a, sizeof(process_t));
+    to_add->next = NULL;
+    to_add->state = STATE_NEW;
+    LL_APPEND(ret->usages, to_add);
+    it_a = it_a->next;
+  }
+  while (it_b->next != NULL) {
+    to_add = calloc(1, sizeof(process_t));
+    memcpy(to_add, it_b, sizeof(process_t));
+    to_add->next = NULL;
+    to_add->state = STATE_NEW;
+    LL_APPEND(ret->usages, to_add);
+    it_b = it_b->next;
+  }
+  return ret;
+}
+
 process_list_t *process_list_new(uid_t user_id) {
   process_list_t *res = calloc(1, sizeof(process_list_t));
   res->processes = NULL;
   res->users = NULL;
   res->current_id = user_id;
   return res;
+}
+
+void process_usage_print(process_usage_t *process) {
+  if (process->time_in_measure > 0) {
+    printf("pid: %d, state: %d, time: %" PRIu64 ", m: %Lf\n", process->pid,
+           process->state, process->time_in_measure,
+           process->time_in_measure / TIME_TO_MIN);
+  }
 }
 
 void process_print(process_t *process) {
