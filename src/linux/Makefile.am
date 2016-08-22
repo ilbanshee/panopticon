@@ -4,4 +4,5 @@ AM_LDFLAGS = $(MORE_LDFLAGS)
 
 lib_LTLIBRARIES = libhost.la
 libhost_la_SOURCES = linux_process.c linux_process.h
-#libhost_la_CFLAGS = -I$(top_srcdir)/lib
+libhost_la_CFLAGS  = $(AM_CFLAGS) @PROCPS_CFLAGS@
+libhost_la_LDFLAGS = $(AM_LDFLAGS) @PROCPS_LIBS@

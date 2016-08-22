@@ -21,4 +21,22 @@
  */
 #include "linux_process.h"
 
+#include <proc/readproc.h>
+
 int test() { return 1; }
+int process_list_processes(process_list_t **result) {
+proc_t proc_info;
+
+PROCTAB* proc = openproc(PROC_FILLMEM | PROC_FILLSTAT | PROC_FILLSTATUS);
+
+char *cmd = (char*)malloc(20*sizeof(char));
+memset(&proc_info, 0, sizeof(proc_info));
+while(readproc(proc, &proc_info) != NULL) {
+  printf("%20s:\t%5ld\t%5lld\t%5lld\n",
+         proc_info.cmd, proc_info.resident,
+         proc_info.utime, proc_info.stime);
+}
+closeproc(proc);
+free(cmd);
+  return 1;
+}

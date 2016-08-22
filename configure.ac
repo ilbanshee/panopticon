@@ -74,7 +74,8 @@ AM_CONDITIONAL([LINUX], [false])
 AM_CONDITIONAL([DARWIN], [false])
 
 case $host in
- *linux*)  AC_DEFINE([HOST_LINUX], [1])  AM_CONDITIONAL([LINUX], [true]);;
+ *linux*)  AC_DEFINE([HOST_LINUX], [1])  AM_CONDITIONAL([LINUX], [true]) \
+     PKG_CHECK_MODULES([PROCPS], [libprocps]);;
  *darwin*) AC_DEFINE([HOST_DARWIN], [1]) AM_CONDITIONAL([DARWIN], [true]);;
 esac
 
