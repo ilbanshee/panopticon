@@ -22,8 +22,19 @@
 #include "utils.h"
 
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
-void strfreev(char **str_array) {}
+void strfreev(char **str_array) {
+  if (str_array == NULL) {
+    return;
+  }
+  char *tmp = *str_array;
+  for (int i = 1; tmp != NULL; i++) {
+    free(tmp);
+    tmp = *(str_array + i);
+  }
+}
 
 int strv_length(char **str_array) {
   char *tmp = *str_array;
@@ -35,6 +46,25 @@ int strv_length(char **str_array) {
   return len;
 }
 
-char *strjoinv(const char *separator, char **str_array) {}
+char *strjoinv(const char *separator, char **str_array) {
+  char *res = NULL;
+  char *tmp = *str_array;
+  int len = 0;
+  int offset = 0;
+  int sep_len = strlen(separator);
+  for (int i = 1; tmp != NULL; i++) {
+    len += strlen(tmp);
+    /* string + separator + \0 */
+    res = realloc(res, len + sep_len + 1);
+    strcpy(res + offset, tmp);
+    if (sep_len > 0 && *(str_array + i) != NULL) {
+      strcpy(res + len, separator);
+    }
+    offset = len + sep_len;
+    len += sep_len;
+    tmp = *(str_array + i);
+  }
+  return res;
+}
 
 char **strv_copy(char **str_dest, char **str_src) { return str_dest; }
