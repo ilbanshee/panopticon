@@ -34,9 +34,12 @@ typedef enum {
 
 typedef struct process_s {
   pid_t pid;              /* process pid */
+  int ppid;               /* pid of parent process */
+  int tgid;               /* task group ID, the POSIX PID */
+  int tid;                /* task id, the POSIX thread ID */
   char *name;             /* executable name */
   char *cmdline;          /* full path command line */
-  uid_t user;             /* real user id for process */
+  int user;             /* real user id for process */
   int32_t threads_num;    /* number of threads */
   int32_t threads_run;    /* number of running threads */
   uint64_t vms;           /* virtual memory size in Kb */
@@ -56,7 +59,7 @@ typedef struct process_usage_s {
 } process_usage_t;
 
 typedef struct user_s {
-  uid_t user;
+  int user;
   char *name;
   struct user_s *next;
 } user_t;

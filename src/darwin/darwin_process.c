@@ -144,15 +144,10 @@ int process_list_processes(process_list_t **result) {
     struct proc_taskinfo task_info;
     ret = proc_pidinfo(process->kp_proc.p_pid, PROC_PIDTASKINFO, 0, &task_info,
                        sizeof(task_info));
-    /*
-    if (ret == 0) {
-      break;
-    }
-    */
     int ret_path =
         proc_pidpath(process->kp_proc.p_pid, pathbuf, sizeof(pathbuf));
     process_t *to_add = calloc(1, sizeof(process_t));
-    to_add->pid = process->kp_proc.p_pid;
+    to_add->tgid = process->kp_proc.p_pid;
     to_add->name = NULL;
     if (ret_path > 0) {
       to_add->cmdline = strdup(pathbuf);
