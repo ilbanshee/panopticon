@@ -34,6 +34,7 @@ void strfreev(char **str_array) {
     free(tmp);
     tmp = *(str_array + i);
   }
+  free(str_array);
 }
 
 int strv_length(char **str_array) {
@@ -67,4 +68,17 @@ char *strjoinv(const char *separator, char **str_array) {
   return res;
 }
 
-char **strv_copy(char **str_dest, char **str_src) { return str_dest; }
+char **strv_copy(char **str_src) {
+  char **str_dest = NULL;
+  char *tmp = *str_src;
+  int i = 0;
+  while(tmp != NULL) {
+    str_dest = realloc(str_dest, (i+1) * sizeof(char *));
+    str_dest[i] = calloc(strlen(tmp)+1, sizeof(char));
+    strcpy(str_dest[i], tmp);
+    tmp = *(str_src + ++i);
+  }
+  str_dest = realloc(str_dest, (i+1) * sizeof(char *));
+  str_dest[i] = NULL;
+  return str_dest;
+}

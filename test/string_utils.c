@@ -32,6 +32,10 @@ int main() {
   assert(0 == strcmp(res, "another\n\ntest"));
   free(res);
 
+  char** cp = NULL;
+  cp = strv_copy(&test1);
+  assert(12 == strv_length(cp));
+  strfreev(cp);
 
   return 0;
 }

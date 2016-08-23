@@ -46,7 +46,7 @@ char *strjoinv(const char *separator, char **str_array);
 /**
  *
  */
-char **strv_copy(char **str_dest, char **str_src);
+char **strv_copy(char **str_src);
 
 
 #endif // UTILS_H_
