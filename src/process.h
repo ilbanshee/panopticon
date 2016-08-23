@@ -33,13 +33,13 @@ typedef enum {
 } process_state;
 
 typedef struct process_s {
-  pid_t pid;              /* process pid */
-  int ppid;               /* pid of parent process */
-  int tgid;               /* task group ID, the POSIX PID */
-  int tid;                /* task id, the POSIX thread ID */
+  int tgid; /* task group ID, the POSIX PID */
+  int tid;  /* task id, the POSIX thread ID */
+  int ppid; /* pid of parent process */
+
   char *name;             /* executable name */
   char *cmdline;          /* full path command line */
-  int user;             /* real user id for process */
+  int user;               /* real user id for process */
   int32_t threads_num;    /* number of threads */
   uint64_t vms;           /* virtual memory size in Kb */
   uint64_t rss;           /* resident set size in Kb */
@@ -50,7 +50,7 @@ typedef struct process_s {
 } process_t;
 
 typedef struct process_usage_s {
-  pid_t pid;
+  int tgid;
   process_state state;
   uint64_t time_in_measure;
   uint32_t percent_in_measure;

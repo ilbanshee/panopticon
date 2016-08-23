@@ -24,11 +24,17 @@
 #include <inttypes.h>
 #include <stdio.h> // for printf
 
-#ifdef HOST_DARWIN
+#if HOST_DARWIN == 1
 #define TIME_TO_MIN 1000000000.0L
 #endif
 
-int pidcmp(process_t *a, process_t *b) { return (a->pid > b->pid); }
+#if HOST_LINUX == 1
+#include <sys/times.h>
+#include <unistd.h>
+#define TIME_TO_MIN (sysconf(_SC_CLK_TCK))
+#endif
+
+int pidcmp(process_t *a, process_t *b) { return (a->tgid > b->tgid); }
 
 process_usage_list_t *process_get_usage(process_t *a, process_t *b) {
   process_usage_list_t *ret = calloc(1, sizeof(process_usage_list_t));
@@ -39,14 +45,14 @@ process_usage_list_t *process_get_usage(process_t *a, process_t *b) {
   it_b = b;
   while (it_a->next != NULL || it_b->next != NULL) {
     to_add = calloc(1, sizeof(process_usage_t));
-    if (it_a->pid < it_b->pid) {
-      to_add->pid = it_a->pid;
+    if (it_a->tgid < it_b->tgid) {
+      to_add->tgid = it_a->tgid;
       to_add->next = NULL;
       to_add->state = STATE_NEW;
       LL_APPEND(ret->usages, to_add);
       it_a = it_a->next;
-    } else if (it_a->pid == it_b->pid) {
-      to_add->pid = it_a->pid;
+    } else if (it_a->tgid == it_b->tgid) {
+      to_add->tgid = it_a->tgid;
       to_add->next = NULL;
       to_add->state = STATE_NORMAL;
       to_add->time_in_measure =
@@ -55,7 +61,7 @@ process_usage_list_t *process_get_usage(process_t *a, process_t *b) {
       it_a = it_a->next;
       it_b = it_b->next;
     } else {
-      to_add->pid = it_b->pid;
+      to_add->tgid = it_b->tgid;
       to_add->next = NULL;
       to_add->state = STATE_NEW;
       LL_APPEND(ret->usages, to_add);
@@ -91,15 +97,14 @@ process_list_t *process_list_new(uid_t user_id) {
 
 void process_usage_print(process_usage_t *process) {
   if (process->time_in_measure > 0) {
-    printf("pid: %d, state: %d, time: %" PRIu64 ", m: %Lf\n", process->pid,
+    printf("tgid: %d, state: %d, time: %" PRIu64 ", m: %Lf\n", process->tgid,
            process->state, process->time_in_measure,
-           process->time_in_measure / TIME_TO_MIN);
+           (long double)process->time_in_measure / TIME_TO_MIN);
   }
 }
 
 void process_print(process_t *process) {
-  printf("pid: %d, tn: %d, vms: %" PRIu64 ", rss: %" PRIu64
-         ", cpu: %Lf\n",
-         process->tgid, process->threads_num, process->vms,
-         process->rss, (process->utime + process->stime) / TIME_TO_MIN);
+  printf("tgid: %d, tn: %d, vms: %" PRIu64 ", rss: %" PRIu64 ", cpu: %Lf\n",
+         process->tgid, process->threads_num, process->vms, process->rss,
+         (long double)(process->utime + process->stime) / TIME_TO_MIN);
 }
