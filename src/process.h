@@ -41,7 +41,6 @@ typedef struct process_s {
   char *cmdline;          /* full path command line */
   int user;             /* real user id for process */
   int32_t threads_num;    /* number of threads */
-  int32_t threads_run;    /* number of running threads */
   uint64_t vms;           /* virtual memory size in Kb */
   uint64_t rss;           /* resident set size in Kb */
   uint64_t utime;         /* total user time in minutes.seconds * TIME_TO_MIN */

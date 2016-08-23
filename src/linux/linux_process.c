@@ -38,7 +38,7 @@ int process_list_processes(process_list_t **result) {
 #endif
 
   PROCTAB *proc =
-      openproc(PROC_FILLMEM | PROC_FILLSTAT | PROC_FILLSTATUS | PROC_FILLARG);
+      openproc(PROC_FILLMEM | PROC_FILLSTAT | PROC_FILLSTATUS | PROC_FILLCOM);
 
   char *cmd = (char *)malloc(20 * sizeof(char));
   memset(&proc_info, 0, sizeof(proc_info));
@@ -47,21 +47,14 @@ int process_list_processes(process_list_t **result) {
     to_add->tgid = proc_info.tgid;
     to_add->name = proc_info.cmd;
     if (proc_info.cmdline != NULL) {
-      size_t cmdline_size = 0;
-      char *tmp = *proc_info.cmdline;
-      int i = 1;
-      while (tmp != NULL) {
-        printf("%s\n", tmp);
-	cmdline_size += strlen(tmp);
-	tmp = *(proc_info.cmdline + i++);
-
-	//to_add->cmdline = realloc(to_add->cmdline, cmdline_size);
-
-
-      }
-      // printf("%s\n", proc_info.cmdline);
+      to_add->cmdline = strjoinv(" ", proc_info.cmdline);
     }
-    // to_add->cmdline = strdup(proc_info.cmdline);
+    to_add->vms = proc_info.vm_size;
+    to_add->rss = proc_info.vm_rss;
+    to_add->threads_num = proc_info.nlwp;
+
+    to_add->utime = proc_info.utime;
+    to_add->stime = proc_info.stime;
 
     to_add->user = proc_info.euid;
 #ifdef COLLECT_STATS

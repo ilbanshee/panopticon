@@ -162,7 +162,7 @@ int process_list_processes(process_list_t **result) {
     } else {
     */
     to_add->threads_num = task_info.pti_threadnum;
-    to_add->threads_run = task_info.pti_numrunning;
+    // to_add->threads_run = task_info.pti_numrunning;
     to_add->vms = task_info.pti_virtual_size / 1024;
     to_add->rss = task_info.pti_resident_size / 1024;
     to_add->utime = task_info.pti_total_user;

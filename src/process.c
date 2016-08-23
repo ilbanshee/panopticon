@@ -98,8 +98,8 @@ void process_usage_print(process_usage_t *process) {
 }
 
 void process_print(process_t *process) {
-  printf("pid: %d, tn: %d, tr: %d, vms: %" PRIu64 ", rss: %" PRIu64
+  printf("pid: %d, tn: %d, vms: %" PRIu64 ", rss: %" PRIu64
          ", cpu: %Lf\n",
-         process->pid, process->threads_num, process->threads_run, process->vms,
+         process->tgid, process->threads_num, process->vms,
          process->rss, (process->utime + process->stime) / TIME_TO_MIN);
 }
