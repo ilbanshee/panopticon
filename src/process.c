@@ -36,13 +36,17 @@
 
 int pidcmp(process_t *a, process_t *b) { return (a->tgid > b->tgid); }
 
-process_usage_list_t *process_get_usage(process_t *a, process_t *b) {
+process_usage_list_t *process_get_usage(process_list_t *a_list,
+                                        process_list_t *b_list) {
   process_usage_list_t *ret = calloc(1, sizeof(process_usage_list_t));
+  ret->timestamp = b_list->timestamp;
+  ret->measure_delta = b_list->timestamp - a_list->timestamp;
+
   process_t *it_a, *it_b;
   process_usage_t *to_add;
 
-  it_a = a;
-  it_b = b;
+  it_a = a_list->processes;
+  it_b = b_list->processes;
   while (it_a->next != NULL || it_b->next != NULL) {
     to_add = calloc(1, sizeof(process_usage_t));
     if (it_a->tgid < it_b->tgid) {

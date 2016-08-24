@@ -17,4 +17,4 @@ endif
 panopticon_LDFLAGS  = $(AM_LDFLAGS) @AVRO_LIBS@ @LIBUV_LIBS@
 
 lib_LTLIBRARIES = libtest.la
-libtest_la_SOURCES = utils.c utils.h
+libtest_la_SOURCES = utils.c utils.h process.h process.c

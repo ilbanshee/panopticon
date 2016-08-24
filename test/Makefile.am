@@ -2,7 +2,7 @@ AM_CFLAGS = $(MORE_CFLAGS) -I$(abs_top_srcdir)/lib
 AM_CPPFLAGS = $(MORE_CPPFLAGS)
 AM_LDFLAGS = $(MORE_LDFLAGS)
 
-check_PROGRAMS = js_process string_utils
+check_PROGRAMS = js_process string_utils usage_test
 TESTS = $(check_PROGRAMS)
 
 js_process_SOURCES = js_process.c
@@ -12,3 +12,6 @@ EXTRA_DIST = js_process.js
 
 string_utils_SOURCES = string_utils.c
 string_utils_LDADD   = $(abs_top_builddir)/src/libtest.la
+
+usage_test_SOURCES = usage_test.c
+usage_test_LDADD   = $(abs_top_builddir)/src/libtest.la

@@ -101,15 +101,16 @@ int main(int argc, char *argv[]) {
   process_list_t *p1 = process_list_new(geteuid());
   process_list_processes(&p1);
 
-  process_usage_list_t *n = process_get_usage(p->processes, p1->processes);
+  process_usage_list_t *n = process_get_usage(p, p1);
 
   process_t *elt = NULL;
   process_usage_t *uelt = NULL;
   int count = 0;
 
-  //  DL_FOREACH(n->usages, uelt) process_usage_print(uelt);
-  DL_FOREACH(p->processes, elt) process_print(elt);
-  printf("ts: %lld\n", p->timestamp);
+  printf("ts: %ld d: %ld\n", n->timestamp, n->measure_delta);
+  DL_FOREACH(n->usages, uelt) process_usage_print(uelt);
+  //DL_FOREACH(p->processes, elt) process_print(elt);
+  printf("ts: %ld\n", p->timestamp);
   DL_COUNT(p->processes, elt, count);
 
   printf("found %d processes\n", count);

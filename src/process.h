@@ -99,7 +99,8 @@ typedef struct process_list_s {
 int test();
 
 int pidcmp(process_t *a, process_t *b);
-process_usage_list_t *process_get_usage(process_t *a, process_t *b);
+process_usage_list_t *process_get_usage(process_list_t *a_list,
+                                        process_list_t *b_list);
 
 process_list_t *process_list_new(uid_t user_id);
 void process_list_delete(process_list_t *pl);

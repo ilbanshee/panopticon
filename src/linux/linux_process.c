@@ -40,7 +40,6 @@ int process_list_processes(process_list_t **result) {
   PROCTAB *proc =
       openproc(PROC_FILLMEM | PROC_FILLSTAT | PROC_FILLSTATUS | PROC_FILLCOM);
 
-  char *cmd = (char *)malloc(20 * sizeof(char));
   memset(&proc_info, 0, sizeof(proc_info));
   while (readproc(proc, &proc_info) != NULL) {
     process_t *to_add = calloc(1, sizeof(process_t));
@@ -66,7 +65,6 @@ int process_list_processes(process_list_t **result) {
     //       proc_info.utime, proc_info.stime);
   }
   closeproc(proc);
-  free(cmd);
 
   LL_SORT((*result)->processes, pidcmp);
 
