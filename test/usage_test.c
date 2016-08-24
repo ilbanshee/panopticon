@@ -40,8 +40,8 @@ int main() {
   process_usage_t *elt = NULL;
   int i = 0;
   DL_FOREACH(n->usages, elt) {
-    assert (elt->tgid == r_pid[i]);
-    assert (elt->time_in_measure == r_deltas[i]);
+    assert(elt->tgid == r_pid[i]);
+    assert(elt->time_in_measure == r_deltas[i]);
     i++;
   }
   return 0;

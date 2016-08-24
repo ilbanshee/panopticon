@@ -24,8 +24,8 @@
 #include <stdio.h>
 
 void dump_stats(stats_t stats) {
-  printf("ps_dur: %lld\n", stats.ps_dur);
+  printf("ps_dur: %" PRIu64 "\n", stats.ps_dur);
   printf("last ps count: %d\n", stats.ps_last_count);
-  printf("ps times: %lld\n", stats.ps_times_count);
+  printf("ps times: %" PRIu64 "\n", stats.ps_times_count);
 }
 #endif
