@@ -53,7 +53,8 @@ process_usage_list_t *process_get_usage(process_list_t *a_list,
     if (it_a->tgid < it_b->tgid) {
       to_add->tgid = it_a->tgid;
       to_add->next = NULL;
-      to_add->state = STATE_NEW;
+      to_add->state = STATE_DELETED;
+      to_add->time_in_measure = 0;
       LL_APPEND(ret->usages, to_add);
       it_a = it_a->next;
     } else if (it_a->tgid == it_b->tgid) {
@@ -68,7 +69,8 @@ process_usage_list_t *process_get_usage(process_list_t *a_list,
     } else {
       to_add->tgid = it_b->tgid;
       to_add->next = NULL;
-      to_add->state = STATE_DELETED;
+      to_add->state = STATE_NEW;
+      to_add->time_in_measure = 0;
       LL_APPEND(ret->usages, to_add);
       it_b = it_b->next;
     }

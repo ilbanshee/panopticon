@@ -131,7 +131,7 @@ void new_test() {
   check(n->usages, r_pid, r_deltas, r_states);
 }
 
-void del_test() {
+void del_test_1() {
   int r_pid[] = {1, 3};
   uint64_t r_deltas[] = {1, 0};
   process_state r_states[] = {STATE_NORMAL, STATE_DELETED};
@@ -155,12 +155,62 @@ void del_test() {
   check(n->usages, r_pid, r_deltas, r_states);
 }
 
-int main() {
+void del_test_2() {
+  int r_pid[] = {1, 3};
+  uint64_t r_deltas[] = {0, 2};
+  process_state r_states[] = {STATE_DELETED, STATE_NORMAL};
 
+  int pid1[] = {1, 3};
+  int pid2[] = {3};
+  uint64_t times1[] = {1, 32};
+  uint64_t times2[] = {34};
+
+  pop_data_t t1 = {.count1 = 2,
+                   .count2 = 1,
+                   .pid1 = pid1,
+                   .pid2 = pid2,
+                   .times1 = times1,
+                   .times2 = times2,
+                   .interval = 50};
+  pop_res_t r = populate(t1);
+
+  process_usage_list_t *n = process_get_usage(r.r1, r.r2);
+
+  check(n->usages, r_pid, r_deltas, r_states);
+}
+
+void del_test_3() {
+  int r_pid[] = {1, 3, 5};
+  uint64_t r_deltas[] = {33, 0, 1};
+  process_state r_states[] = {STATE_NORMAL, STATE_DELETED, STATE_NORMAL};
+
+  int pid1[] = {1, 3, 5};
+  int pid2[] = {1, 5};
+  uint64_t times1[] = {1, 32, 4};
+  uint64_t times2[] = {34, 5};
+
+  pop_data_t t1 = {.count1 = 3,
+                   .count2 = 2,
+                   .pid1 = pid1,
+                   .pid2 = pid2,
+                   .times1 = times1,
+                   .times2 = times2,
+                   .interval = 50};
+  pop_res_t r = populate(t1);
+
+  process_usage_list_t *n = process_get_usage(r.r1, r.r2);
+
+  check(n->usages, r_pid, r_deltas, r_states);
+}
+
+int main() {
   simple_test();
   one_test();
   new_test();
-  del_test();
+
+  del_test_1();
+  del_test_2();
+  del_test_3();
 
   return 0;
 }
