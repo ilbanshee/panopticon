@@ -43,8 +43,6 @@ pop_res_t populate(pop_data_t data) {
 
   res.r1->timestamp = 50000;
   res.r2->timestamp = 50000 + data.interval;
-  LL_SORT(res.r1->processes, pidcmp);
-  LL_SORT(res.r2->processes, pidcmp);
 
   return res;
 }

@@ -34,10 +34,17 @@
 #define TIME_TO_MIN (sysconf(_SC_CLK_TCK))
 #endif
 
-int pidcmp(process_t *a, process_t *b) { return (a->tgid > b->tgid); }
+static int pidcmp(process_t *a, process_t *b);
+
+
+static int pidcmp(process_t *a, process_t *b) { return (a->tgid > b->tgid); }
 
 process_usage_list_t *process_get_usage(process_list_t *a_list,
                                         process_list_t *b_list) {
+  /* in order to merge in linear time we must order the processes lists */
+  LL_SORT(a_list->processes, pidcmp);
+  LL_SORT(b_list->processes, pidcmp);
+
   process_usage_list_t *ret = calloc(1, sizeof(process_usage_list_t));
   ret->timestamp = b_list->timestamp;
   ret->measure_delta = b_list->timestamp - a_list->timestamp;

@@ -27,7 +27,6 @@
 #include "../stats.h"
 #include "../utils.h"
 
-int test() { return 1; }
 int process_list_processes(process_list_t **result) {
   proc_t proc_info;
 #ifdef COLLECT_STATS
@@ -65,8 +64,6 @@ int process_list_processes(process_list_t **result) {
     //       proc_info.utime, proc_info.stime);
   }
   closeproc(proc);
-
-  LL_SORT((*result)->processes, pidcmp);
 
   struct timeval tv;
   gettimeofday(&tv, NULL);

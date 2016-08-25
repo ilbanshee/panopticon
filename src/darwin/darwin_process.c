@@ -210,8 +210,6 @@ int process_list_processes(process_list_t **result) {
   }
   free(proc_list);
 
-  LL_SORT((*result)->processes, pidcmp);
-
   struct timeval tv;
   gettimeofday(&tv, NULL);
   (*result)->timestamp = 1000000 * tv.tv_sec + tv.tv_usec;
@@ -224,41 +222,4 @@ int process_list_processes(process_list_t **result) {
 #endif
 
   return ret;
-}
-
-int test() {
-  char pathbuf[PROC_PIDPATHINFO_MAXSIZE];
-  int ret;
-
-  printf("list of processes\n");
-  kinfo_proc *proc_list = NULL;
-  size_t proc_count = 0;
-  get_BSD_process_list(&proc_list, &proc_count);
-  for (unsigned int i = 0; i < proc_count; i++) {
-    struct kinfo_proc *process = &proc_list[i];
-    struct passwd *user = getpwuid(process->kp_eproc.e_ucred.cr_uid);
-
-    ret = proc_pidpath(process->kp_proc.p_pid, pathbuf, sizeof(pathbuf));
-    if (ret <= 0) {
-      fprintf(stderr, "PID %d: proc_pidpath ();\n", process->kp_proc.p_pid);
-      fprintf(stderr, "    %s\n", strerror(errno));
-    } else {
-      printf("proc %d: %s\n", process->kp_proc.p_pid, pathbuf);
-    }
-
-    printf("%d %s ", process->kp_proc.p_pid, process->kp_proc.p_comm);
-    if (user != NULL) {
-      printf("uid: %d, name: %s\n", process->kp_eproc.e_ucred.cr_uid,
-             user->pw_name);
-    } else {
-      printf("\n");
-    }
-  }
-  free(proc_list);
-
-  /* get load average last minute, 5 minutes, 15 minutes */
-  double loadavg[3];
-  getloadavg(loadavg, 3);
-  printf("avg %f %f %f\n", loadavg[0], loadavg[1], loadavg[2]);
-  return 1;
 }

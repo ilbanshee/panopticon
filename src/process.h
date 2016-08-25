@@ -96,9 +96,16 @@ typedef struct process_list_s {
   uint64_t timestamp; /* in microseconds */
 } process_list_t;
 
-int test();
-
-int pidcmp(process_t *a, process_t *b);
+/** Merge two processes list to get cpu time usage stats.
+ *
+ *  this function will merge two process_list_t and return a
+ *  process_usage_list_t struct with a sorted list
+ *  of process_usage_t structs inside.
+ *
+ *  @warning this function will sort input list in-place so
+ *  a_list and b_list will contain the same elements after call
+ *  returns but sorted in ascending pid order.
+ */
 process_usage_list_t *process_get_usage(process_list_t *a_list,
                                         process_list_t *b_list);
 
