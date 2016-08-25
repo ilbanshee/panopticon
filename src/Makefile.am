@@ -16,7 +16,7 @@ panopticon_LDADD    = darwin/libhost.la
 endif
 panopticon_LDFLAGS  = $(AM_LDFLAGS) @AVRO_LIBS@ @LIBUV_LIBS@
 
-EXTRA_DIST = mainpage.dox
+EXTRA_DIST = mainpage.md
 
 lib_LTLIBRARIES = libtest.la
 libtest_la_SOURCES = utils.c utils.h process.h process.c
