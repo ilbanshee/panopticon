@@ -41,13 +41,14 @@ process_usage_list_t *process_get_usage(process_list_t *a_list,
   process_usage_list_t *ret = calloc(1, sizeof(process_usage_list_t));
   ret->timestamp = b_list->timestamp;
   ret->measure_delta = b_list->timestamp - a_list->timestamp;
+  ret->usages = NULL;
 
   process_t *it_a, *it_b;
   process_usage_t *to_add;
 
   it_a = a_list->processes;
   it_b = b_list->processes;
-  while (it_a->next != NULL || it_b->next != NULL) {
+  while (it_a != NULL && it_b != NULL) {
     to_add = calloc(1, sizeof(process_usage_t));
     if (it_a->tgid < it_b->tgid) {
       to_add->tgid = it_a->tgid;
@@ -60,31 +61,33 @@ process_usage_list_t *process_get_usage(process_list_t *a_list,
       to_add->next = NULL;
       to_add->state = STATE_NORMAL;
       to_add->time_in_measure =
-          it_b->utime - it_a->utime + it_b->stime - it_a->stime;
+          (it_b->utime - it_a->utime) + (it_b->stime - it_a->stime);
       LL_APPEND(ret->usages, to_add);
       it_a = it_a->next;
       it_b = it_b->next;
     } else {
       to_add->tgid = it_b->tgid;
       to_add->next = NULL;
-      to_add->state = STATE_NEW;
+      to_add->state = STATE_DELETED;
       LL_APPEND(ret->usages, to_add);
       it_b = it_b->next;
     }
   }
-  while (it_a->next != NULL) {
+  while (it_a != NULL) {
     to_add = calloc(1, sizeof(process_t));
     memcpy(to_add, it_a, sizeof(process_t));
     to_add->next = NULL;
-    to_add->state = STATE_NEW;
+    to_add->state = STATE_DELETED;
+    to_add->time_in_measure = 0;
     LL_APPEND(ret->usages, to_add);
     it_a = it_a->next;
   }
-  while (it_b->next != NULL) {
+  while (it_b != NULL) {
     to_add = calloc(1, sizeof(process_t));
     memcpy(to_add, it_b, sizeof(process_t));
     to_add->next = NULL;
     to_add->state = STATE_NEW;
+    to_add->time_in_measure = 0;
     LL_APPEND(ret->usages, to_add);
     it_b = it_b->next;
   }
