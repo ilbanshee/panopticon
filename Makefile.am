@@ -7,6 +7,9 @@ endif
 if DARWIN
 SUBDIRS       += src/darwin
 endif
+if HAVE_DOXYGEN
+SUBDIRS       += docs
+endif
 SUBDIRS	      += src test
 EXTRA_DIST     = get-version autogen.sh
 DISTCLEANFILES = ChangeLog

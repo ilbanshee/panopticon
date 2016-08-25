@@ -29,6 +29,11 @@ AC_PROG_LIBTOOL
 AC_PROG_LN_S
 AC_PROG_EGREP
 
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+if test -z "$DOXYGEN";
+   then AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
+fi
+
 # Check some compiler flags
 AX_CFLAGS_GCC_OPTION([-fdiagnostics-show-option],[MORE_CFLAGS])
 AX_CFLAGS_GCC_OPTION([-pipe],[MORE_CFLAGS])
@@ -82,6 +87,10 @@ esac
 #PKG_CHECK_MODULES([JANSSON], [jansson >= 2.7])
 PKG_CHECK_MODULES([LIBUV], [libuv >= 1.9])
 PKG_CHECK_MODULES([AVRO], [avro-c >= 1.8])
+
+
+AM_CONDITIONAL([HAVE_DOXYGEN],
+[test -n "$DOXYGEN"])AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Doxyfile docs/Makefile])])
 
 AC_CACHE_SAVE
 
