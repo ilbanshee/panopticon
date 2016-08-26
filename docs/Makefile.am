@@ -5,9 +5,11 @@ if HAVE_DOXYGEN
 #$(directory)/man_page_1.3: doxyfile.stamp
 #$(directory)/man_page_2.3: doxyfile.stamp
 
+.PHONY: doxyfile.stamp
+
 doxyfile.stamp:
 	$(DOXYGEN) Doxyfile
-	echo Timestamp > doxyfile.stamp
+	echo $$(date +%Y%m%d%H%M%S) > doxyfile.stamp
 
 CLEANFILES = doxyfile.stamp
 
